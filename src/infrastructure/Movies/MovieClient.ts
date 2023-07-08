@@ -1,6 +1,6 @@
 import AxiosClient from "../../config/axios.config";
-import { MOVIES_URI, POPULAR_MOVIES } from "../../constants";
-import { IMoviesResponse } from "../../domain/Movies/Movies";
+import { MOVIES_URI, MOVIE_DETAIL, POPULAR_MOVIES } from "../../constants";
+import { IMoviesResponse, Movie } from "../../domain/Movies/Movies";
 
 async function getMovies(
   currentPage: number,
@@ -18,4 +18,12 @@ async function getPopularMovies() {
   return axiosClient.get(uri).then((res) => res.data);
 }
 
-export { getMovies, getPopularMovies };
+const getMovieDetail: (movieId: number) => Promise<Movie> = async (
+  movieId: number
+) => {
+  const axiosClient = new AxiosClient();
+  const uri = MOVIE_DETAIL(movieId);
+  return axiosClient.get(uri).then((res) => res.data);
+};
+
+export { getMovies, getPopularMovies, getMovieDetail };

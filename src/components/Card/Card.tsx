@@ -28,7 +28,7 @@ const Cards: React.FC<IProps> = ({ movie }) => {
         </div>
       ) : (
         <Link
-          to={`/movie/${movie.id}`}
+          to={`/movie/detail/${movie.id}`}
           style={{ textDecoration: "none", color: "white" }}
         >
           <div className="cards">

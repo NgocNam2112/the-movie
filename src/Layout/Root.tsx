@@ -7,7 +7,7 @@ import { IMovie, IMoviesResponse } from "../domain/Movies/Movies";
 import { getPopularMovies } from "../infrastructure/Movies/MovieClient";
 
 const Root = () => {
-  const { search } = useLocation();
+  const { search, pathname } = useLocation();
   const navigate = useNavigate();
 
   const [popularMovies, setPopularMovies] = useState<IMovie[]>([]);
@@ -73,44 +73,46 @@ const Root = () => {
           </form>
         </header>
         <div className="poster">
-          <Carousel
-            showThumbs={false}
-            autoPlay={true}
-            transitionTime={3}
-            infiniteLoop={true}
-            showStatus={false}
-          >
-            {popularMovies.map((movie) => (
-              <Link
-                style={{ textDecoration: "none", color: "white" }}
-                to={`/movie/${movie.id}`}
-              >
-                <div className="posterImage">
-                  <img
-                    src={`https://image.tmdb.org/t/p/original${
-                      movie && movie.backdrop_path
-                    }`}
-                    alt="The movie"
-                  />
-                </div>
-                <div className="posterImage__overlay">
-                  <div className="posterImage__title">
-                    {movie ? movie.original_title : ""}
+          {!pathname.includes("detail") && (
+            <Carousel
+              showThumbs={false}
+              autoPlay={true}
+              transitionTime={3}
+              infiniteLoop={true}
+              showStatus={false}
+            >
+              {popularMovies.map((movie) => (
+                <Link
+                  style={{ textDecoration: "none", color: "white" }}
+                  to={`/movie/detail/${movie.id}`}
+                >
+                  <div className="posterImage">
+                    <img
+                      src={`https://image.tmdb.org/t/p/original${
+                        movie && movie.backdrop_path
+                      }`}
+                      alt="The movie"
+                    />
                   </div>
-                  <div className="posterImage__runtime">
-                    {movie ? movie.release_date : ""}
-                    <span className="posterImage__rating">
-                      {movie ? movie.vote_average : ""}
-                      <i className="fas fa-star" />{" "}
-                    </span>
+                  <div className="posterImage__overlay">
+                    <div className="posterImage__title">
+                      {movie ? movie.original_title : ""}
+                    </div>
+                    <div className="posterImage__runtime">
+                      {movie ? movie.release_date : ""}
+                      <span className="posterImage__rating">
+                        {movie ? movie.vote_average : ""}
+                        <i className="fas fa-star" />{" "}
+                      </span>
+                    </div>
+                    <div className="posterImage__description">
+                      {movie ? movie.overview : ""}
+                    </div>
                   </div>
-                  <div className="posterImage__description">
-                    {movie ? movie.overview : ""}
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </Carousel>
+                </Link>
+              ))}
+            </Carousel>
+          )}
           <Outlet />
         </div>
 
