@@ -12,6 +12,18 @@ a {
   color: #fff;
 }
 
+.center-max-size-loading {
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.center-loading {
+  height: calc(100vh - 58px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .center-max-size {
   margin: 0 auto;
   padding: 0 15px;

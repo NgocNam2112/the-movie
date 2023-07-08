@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import "./Card.scss";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { IMovie } from "../../domain/Movies/Movies";
 
 interface IProps {
@@ -10,13 +10,23 @@ interface IProps {
 }
 
 const Cards: React.FC<IProps> = ({ movie }) => {
+  const { type } = useParams();
+  const { search } = useLocation();
   const [isLoading, setIsLoading] = useState(true);
+  const searchQuery = useMemo(() => search.split("=")[1], [search]);
 
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
     }, 1500);
   }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+  }, [type, searchQuery]);
 
   return (
     <>

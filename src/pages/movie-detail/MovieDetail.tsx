@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import YouTube from "react-youtube";
-import Loading from "../../components/Loading/Loading";
 import "./MovieDetail.scss";
 import { getMovieDetail } from "../../infrastructure/Movies/MovieClient";
 import { Movie } from "../../domain/Movies/Movies";
+import { LoadingContext } from "../../Layout/Root";
 
 const MovieDetail = () => {
   const { movieId } = useParams();
@@ -12,44 +12,31 @@ const MovieDetail = () => {
   const [trailer, setTrailer] = useState<any>(null);
   const [movie, setMovie] = useState<Movie | null>();
 
-  const [loading, setLoading] = useState<boolean>(true);
+  const { setLoading } = useContext(LoadingContext);
 
-  const handleFetchMovie = useCallback(
-    async (movieId: number) => {
-      try {
-        setLoading(true);
-        setTimeout(async () => {
-          const data = await getMovieDetail(movieId);
+  const handleFetchMovie = async (movieId: number) => {
+    try {
+      setLoading(true);
+      const data = await getMovieDetail(movieId);
 
-          if (data.videos && data.videos.results) {
-            const trailer = data.videos.results.find(
-              (vid) => vid.name === "Official Trailer"
-            );
-            setTrailer(trailer ? trailer : data.videos.results[0]);
-          }
-
-          setMovie(data);
-        }, 1000);
-      } catch (error) {
-      } finally {
-        setLoading(false);
+      if (data.videos && data.videos.results) {
+        const trailer = data.videos.results.find(
+          (vid) => vid.name === "Official Trailer"
+        );
+        setTrailer(trailer ? trailer : data.videos.results[0]);
       }
-    },
-    [movieId]
-  );
+
+      setMovie(data);
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!movieId) return;
     handleFetchMovie(movieId as unknown as number);
   }, []);
-
-  //   if (loading) {
-  //     return (
-  //       <div className="center-max-size center-loading">
-  //         <Loading />
-  //       </div>
-  //     );
-  //   }
 
   return (
     <main>
