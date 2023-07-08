@@ -11,6 +11,7 @@ const Root = () => {
   const navigate = useNavigate();
 
   const [popularMovies, setPopularMovies] = useState<IMovie[]>([]);
+  const [isActive, setIsActive] = useState<boolean>(false);
 
   const handleFetchMovie = async () => {
     const movies: IMoviesResponse = await getPopularMovies();
@@ -36,11 +37,36 @@ const Root = () => {
     <PullToRefresh onRefresh={handleRefresh}>
       <div>
         <header className="center-max-size header">
-          <span className="brand">
-            <Link to="/">Movie Trailer App</Link>
-          </span>
+          <div className="header__title">
+            <div className="headerLeft">
+              <Link to="/">
+                <img
+                  className="header__icon"
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/2560px-IMDB_Logo_2016.svg.png"
+                  alt="header icon"
+                />
+              </Link>
+              <Link to="/movies/popular" style={{ textDecoration: "none" }}>
+                <span>Popular</span>
+              </Link>
+              <Link to="/movies/top_rated" style={{ textDecoration: "none" }}>
+                <span>Top Rated</span>
+              </Link>
+              <Link to="/movies/upcoming" style={{ textDecoration: "none" }}>
+                <span>Upcoming</span>
+              </Link>
+            </div>
+          </div>
           <form className="form">
-            <input className="search" type="text" id="search" />
+            <input
+              className={`search ${
+                isActive ? "search__active" : "search__disactive"
+              }`}
+              type="text"
+              id="search"
+              onClick={() => setIsActive(true)}
+              onBlur={() => setIsActive(false)}
+            />
             <button className="submit-search" type="submit">
               <i className="fa fa-search"></i>
             </button>

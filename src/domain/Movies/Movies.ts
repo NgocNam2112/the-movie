@@ -21,3 +21,8 @@ export interface IMoviesResponse {
   total_pages: number;
   total_results: number;
 }
+
+export enum MOVIE_TYPES {
+  NOW_PLAYING = "now_playing",
+  POPULAR = "popular",
+}

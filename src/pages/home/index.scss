@@ -1,0 +1,80 @@
+.movie__list {
+  padding: 0 3rem 3rem 3rem;
+}
+
+.list__title {
+  font-size: 1.75rem;
+  margin: 2.5rem;
+}
+
+.list__cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.center-max-size-paginate {
+  max-width: 1020px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.pagination {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pagination ul {
+  display: flex;
+  list-style: none;
+  gap: 8px;
+}
+
+.pagination ul li {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid white;
+  cursor: pointer;
+}
+
+.selected {
+  background-color: #4caf50;
+  color: white;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .pagination {
+    justify-content: center;
+  }
+  .pagination ul {
+    overflow-x: auto;
+  }
+}
+
+@media screen and (max-width: 540px) {
+  .container {
+    grid-template-columns: 1fr 1fr;
+  }
+  .pagination {
+    justify-content: center;
+  }
+  .pagination ul {
+    overflow-x: auto;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+  .pagination {
+    justify-content: center;
+  }
+  .pagination ul {
+    overflow-x: auto;
+  }
+}
