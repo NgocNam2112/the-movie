@@ -30,6 +30,11 @@ const routers = createBrowserRouter([
         element: <MovieDetail />,
         errorElement: <ErrorPage />,
       },
+      {
+        path: "search",
+        element: <Home />,
+        errorElement: <ErrorPage />,
+      },
     ],
   },
 ]);

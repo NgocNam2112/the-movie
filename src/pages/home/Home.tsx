@@ -1,39 +1,72 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { getMovies } from "../../infrastructure/Movies/MovieClient";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
+import {
+  getMovies,
+  getSearchMovie,
+} from "../../infrastructure/Movies/MovieClient";
 import { IMovie } from "../../domain/Movies/Movies";
 import ReactPaginate from "react-paginate";
 import "./Home.scss";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Cards from "../../components/Card/Card";
-import { LoadingContext } from "../../Layout/Root";
 
 const Home = () => {
   const navigate = useNavigate();
-  const { search } = useLocation();
+  const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
   const { type } = useParams();
-  const { setLoading } = useContext(LoadingContext);
 
   const [movieList, setMovieList] = useState<IMovie[]>([]);
   const [pageCurrent, setPageCurrent] = useState<number>(0);
 
-  const page = useMemo(() => search.split("=")[1], [search]);
+  const page = useMemo(() => searchParams.get("page"), [searchParams]);
+  const query = useMemo(() => searchParams.get("query"), [searchParams]);
 
   const handleGetMovies = useCallback(
     async (currentPage: number) => {
       try {
-        setLoading(true);
         const movie = await getMovies(currentPage, type || "now_playing");
         setMovieList(movie.results);
       } catch (error) {
         navigate("/errorPage");
       } finally {
-        setLoading(false);
       }
     },
-    [navigate, setLoading, type]
+    [type]
   );
-  useEffect(() => {
+
+  const handleSearchMovies = async () => {
+    if (!page) {
+      setPageCurrent(0);
+      try {
+        const searchMovies = await getSearchMovie(
+          typeof query === "string" ? query : "",
+          1
+        );
+        setMovieList(searchMovies.results);
+      } catch (error) {}
+      return;
+    }
+    try {
+      const searchMovies = await getSearchMovie(
+        typeof query === "string" ? query : "",
+        +page
+      );
+
+      setMovieList(searchMovies.results);
+    } catch (error) {}
+  };
+
+  const handleFetchMovie = () => {
+    if (pathname.includes("search")) {
+      handleSearchMovies();
+      return;
+    }
     if (!page) {
       setPageCurrent(0);
       handleGetMovies(1);
@@ -41,24 +74,40 @@ const Home = () => {
       setPageCurrent(+page - 1);
       handleGetMovies(+page);
     }
-  }, [page, type]);
+  };
 
   const handlePageClick = (data: { selected: number }) => {
-    navigate(`?page=${data.selected + 1}`);
     if (data.selected === 0) {
       setPageCurrent(data.selected + 1);
     } else {
       setPageCurrent(data.selected);
     }
+    navigate(`?page=${data.selected + 1}`);
     handleGetMovies(data.selected + 1);
   };
+
+  useEffect(() => {
+    handleFetchMovie();
+  }, []);
+
+  useEffect(() => {
+    handleFetchMovie();
+  }, [type]);
+
+  useEffect(() => {
+    if (!page || +page === 1) {
+      setPageCurrent(0);
+    } else {
+      setPageCurrent(+page - 1);
+    }
+  }, [page]);
   return (
     <>
       <div className="poster">
         <>
           <div className="movie__list">
             <h2 className="list__title">
-              {(!type ? "NOW PLAYING" : type).toUpperCase()}
+              {(query ? query : !type ? "NOW PLAYING" : type).toUpperCase()}
             </h2>
             <div className="list__cards">
               {movieList.map((movie: IMovie, index: number) => (

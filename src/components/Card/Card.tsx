@@ -48,6 +48,7 @@ const Cards: React.FC<IProps> = ({ movie }) => {
                 movie ? movie.poster_path : ""
               }`}
               alt="card_image"
+              loading="lazy"
             />
             <div className="cards__overlay">
               <div className="card__title">

@@ -1,18 +1,19 @@
-import { useState, useEffect, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import YouTube from "react-youtube";
 import "./MovieDetail.scss";
 import { getMovieDetail } from "../../infrastructure/Movies/MovieClient";
 import { Movie } from "../../domain/Movies/Movies";
-import { LoadingContext } from "../../Layout/Root";
+import Loading from "../../components/Loading/Loading";
 
 const MovieDetail = () => {
   const { movieId } = useParams();
+  const navigate = useNavigate();
+
   const [playing, setPlaying] = useState<boolean>(false);
   const [trailer, setTrailer] = useState<any>(null);
   const [movie, setMovie] = useState<Movie | null>();
-
-  const { setLoading } = useContext(LoadingContext);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleFetchMovie = async (movieId: number) => {
     try {
@@ -28,8 +29,9 @@ const MovieDetail = () => {
 
       setMovie(data);
     } catch (error) {
+      navigate("/errorPage");
     } finally {
-      setLoading(false);
+      setTimeout(() => setLoading(false), 1000);
     }
   };
 
@@ -37,6 +39,14 @@ const MovieDetail = () => {
     if (!movieId) return;
     handleFetchMovie(movieId as unknown as number);
   }, []);
+
+  if (loading) {
+    return (
+      <div className="center-max-size-loading center-loading">
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <main>
