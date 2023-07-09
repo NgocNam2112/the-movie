@@ -131,7 +131,7 @@ const Home = () => {
               nextLabel="next >"
               onPageChange={handlePageClick}
               pageRangeDisplayed={5}
-              pageCount={20}
+              pageCount={pathname.includes("search") ? totalPage : 20}
               previousLabel="< previous"
               forcePage={pageCurrent}
             />
