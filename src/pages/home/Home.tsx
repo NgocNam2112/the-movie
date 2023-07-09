@@ -21,6 +21,7 @@ const Home = () => {
   const [searchParams] = useSearchParams();
   const { type } = useParams();
 
+  const [totalPage, setTotalPage] = useState<number>(0);
   const [movieList, setMovieList] = useState<IMovie[]>([]);
   const [pageCurrent, setPageCurrent] = useState<number>(0);
 
@@ -49,7 +50,10 @@ const Home = () => {
           1
         );
         setMovieList(searchMovies.results);
-      } catch (error) {}
+        setTotalPage(searchMovies.total_pages);
+      } catch (error) {
+        navigate("/errorPage");
+      }
       return;
     }
     try {
@@ -59,7 +63,10 @@ const Home = () => {
       );
 
       setMovieList(searchMovies.results);
-    } catch (error) {}
+      setTotalPage(searchMovies.total_pages);
+    } catch (error) {
+      navigate("/errorPage");
+    }
   };
 
   const handleFetchMovie = () => {
@@ -92,7 +99,7 @@ const Home = () => {
 
   useEffect(() => {
     handleFetchMovie();
-  }, [type]);
+  }, [type, query]);
 
   useEffect(() => {
     if (!page || +page === 1) {
@@ -110,9 +117,11 @@ const Home = () => {
               {(query ? query : !type ? "NOW PLAYING" : type).toUpperCase()}
             </h2>
             <div className="list__cards">
-              {movieList.map((movie: IMovie, index: number) => (
-                <Cards key={index} movie={movie} />
-              ))}
+              {movieList.length
+                ? movieList.map((movie: IMovie, index: number) => (
+                    <Cards key={index} movie={movie} />
+                  ))
+                : `No movie name ${query}`}
             </div>
           </div>
           <div className="center-max-size-paginate pagination">
