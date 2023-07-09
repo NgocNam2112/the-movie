@@ -11,7 +11,6 @@ import { Carousel } from "react-responsive-carousel";
 import { createContext, useEffect, useState } from "react";
 import { IMovie, IMoviesResponse } from "../domain/Movies/Movies";
 import { getPopularMovies } from "../infrastructure/Movies/MovieClient";
-import Loading from "../components/Loading/Loading";
 
 export const LoadingContext = createContext<any>(null);
 
@@ -63,6 +62,12 @@ const Root = () => {
     handleFetchMovie();
   }, []);
 
+  useEffect(() => {
+    if (!location.pathname.includes("search")) {
+      setSearchQuery("");
+    }
+  }, [location]);
+
   return (
     <PullToRefresh onRefresh={handleRefresh}>
       <div>
@@ -93,6 +98,7 @@ const Root = () => {
               className={`search ${
                 isActive ? "search__active" : "search__disactive"
               }`}
+              value={searchQuery}
               type="text"
               id="search"
               onClick={() => setIsActive(true)}
